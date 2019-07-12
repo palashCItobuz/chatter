@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as Controller;
 use Validator;
 
+use App\DiscussionLikes;
+
 class ChatterDiscussionController extends Controller
 {
     /**
@@ -215,6 +217,8 @@ class ChatterDiscussionController extends Controller
             // Dynamically register markdown service provider
             \App::register('GrahamCampbell\Markdown\MarkdownServiceProvider');
         }
+
+        $likedDiscussion = DiscussionLikes::where('user_id', $user_id)->where('discussion_id', $discussion->id)->first();
 
         $discussion->increment('views');
         
