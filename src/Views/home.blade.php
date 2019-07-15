@@ -19,7 +19,7 @@
 
 <div id="chatter" class="chatter_home">
 
-	<div id="chatter_hero" class="no-bg">
+	<!--div id="chatter_hero" class="no-bg">
 		<?php $headline_logo = Config::get('chatter.headline_logo'); ?>
 		@if( isset( $headline_logo ) && !empty( $headline_logo ) )
 			<img src="{{ Config::get('chatter.headline_logo') }}">
@@ -27,7 +27,7 @@
 			<h1>@lang('chatter::intro.headline')</h1>
 			<p>@lang('chatter::intro.description')</p>
 		@endif
-	</div>
+	</div-->
 
 	@if(config('chatter.errors'))
 		@if(Session::has('chatter_alert'))
@@ -73,8 +73,8 @@
 					<div class="row">
 						<form id="search" class="col s12" action="" method="get">
 							<div class="form-group">
-								<input class="form-control-sm" id="search_forum" placeholder="Search.." name="term">
-								<input value="Search" type="submit">
+								<input class="form-control-forum" id="search_forum" placeholder="Search.." name="term">
+								<input value="Search" class="btn btn-primary" type="submit">
 							</div>
 						</form>
 					</div>
