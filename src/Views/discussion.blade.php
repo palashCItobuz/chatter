@@ -25,15 +25,21 @@
 	<div id="chatter_header" style="background-color:{{ $discussion->color }}">
 		<div class="container">
 			<a class="back_btn" href="/{{ Config::get('chatter.routes.home') }}"><i class="chatter-back"></i></a>
-			<h1>{{ $discussion->title }}</h1><span class="chatter_head_details"> @lang('chatter::messages.discussion.head_details')<a class="chatter_cat" href="/{{ Config::get('chatter.routes.home') }}/{{ Config::get('chatter.routes.category') }}/{{ $discussion->category->slug }}" style="background-color:{{ $discussion->category->color }}">{{ $discussion->category->name }}</a></span>
-			@php 
-				$user = Auth::user(); 
-			@endphp
-			<div class="clearfix float-right ">
-				<a href="#" class="like_chat {{ isset($likedDiscussion) && $likedDiscussion->user->id === $user->id ? 'liked' : '' }}" data-discussion_id="{{ $discussion->id }}" data-user_id="{{$user->id}}">
-					<i class="fa fa-thumbs-up mr-2"></i>
-				</a>
-			</div>
+			<h1>{{ $discussion->title }}</h1>
+			<span class="chatter_head_details"> 
+				@lang('chatter::messages.discussion.head_details')<a class="chatter_cat" href="/{{ Config::get('chatter.routes.home') }}/{{ Config::get('chatter.routes.category') }}/{{ $discussion->category->slug }}" style="background-color:{{ $discussion->category->color }}">{{ $discussion->category->name }}</a>
+				@php
+					$user = Auth::user(); 
+				@endphp
+				<span class="clearfix float-right ">
+					<span><a href="#" class="like_chat {{ isset($likedDiscussion) && $likedDiscussion->user->id === $user->id ? 'liked' : '' }}" data-discussion_id="{{ $discussion->id }}" data-user_id="{{$user->id}}">
+						<i class="fa fa-thumbs-up mr-2 upvote"></i>
+					</a>Likes: {{ $discussion->likes->count() }} </span>
+					<span><a href="#" class="unlike_chat {{ isset($dislikedDiscussion) && $dislikedDiscussion->user->id === $user->id ? 'disliked' : '' }}" data-discussion_id="{{ $discussion->id }}" data-user_id="{{$user->id}}">
+						<i class="fa fa-thumbs-down mr-2 downvote"></i>
+					</a></a>Dislikes: {{ $discussion->dislikes->count() }} </span>
+				</span>
+			</span>
 		</div>
 	</div>
 
@@ -475,7 +481,10 @@
     // global app configuration object
     var config = {
         routes: [
-            { 'likeDiscussion': "{{ URL::to('user/forums/like-discussion') }}" }
+            { 
+				'likeDiscussion': "{{ URL::to('user/forums/like-discussion') }}",
+				'disLikeDiscussion': "{{ URL::to('user/forums/dislike-discussion') }}"
+			}
         ]
 	};
 	
@@ -487,6 +496,21 @@
 			url: `${config.routes[0].likeDiscussion}/${discussionId}`, success: function (result) {
 				that.addClass('liked')
 				console.log(that, result)
+				location.reload();
+			}
+		});
+		return false;
+	})
+
+	$(document).on('click', '.unlike_chat', function () {
+		var that = $(this)
+		var discussionId = that.data('discussion_id')
+		console.log(`${config.routes[0].disLikeDiscussion}/${discussionId}`)
+		$.ajax({
+			url: `${config.routes[0].disLikeDiscussion}/${discussionId}`, success: function (result) {
+				that.addClass('disliked')
+				console.log(that, result)
+				location.reload();
 			}
 		});
 		return false;

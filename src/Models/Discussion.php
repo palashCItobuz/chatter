@@ -45,4 +45,14 @@ class Discussion extends Model
     {
         return $this->belongsToMany(config('chatter.user.namespace'), 'chatter_user_discussion', 'discussion_id', 'user_id');
     }
+
+    public function likes()
+    {
+        return $this->hasMany('App\DiscussionLikes','discussion_id');
+    }
+
+    public function dislikes()
+    {
+        return $this->hasMany('App\DiscussionDislikes','discussion_id');
+    }
 }
