@@ -19,8 +19,7 @@
 
 <div id="chatter" class="chatter_home">
 
-	<div id="chatter_hero">
-		<div id="chatter_hero_dimmer"></div>
+	<div id="chatter_hero" class="no-bg">
 		<?php $headline_logo = Config::get('chatter.headline_logo'); ?>
 		@if( isset( $headline_logo ) && !empty( $headline_logo ) )
 			<img src="{{ Config::get('chatter.headline_logo') }}">
@@ -71,6 +70,15 @@
 	    	</div>
 	        <div class="col-md-9 right-column">
 	        	<div class="panel">
+					<div class="row">
+						<form id="search" class="col s12" action="" method="get">
+							<div class="form-group">
+								<input class="form-control-sm" id="search_forum" placeholder="Search.." name="term">
+								<input value="Search" type="submit">
+							</div>
+						</form>
+					</div>
+
 		        	<ul class="discussions">
 		        		@foreach($discussions as $discussion)
 				        	<li>

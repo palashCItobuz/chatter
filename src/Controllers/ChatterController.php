@@ -5,16 +5,17 @@ namespace DevDojo\Chatter\Controllers;
 use Auth;
 use DevDojo\Chatter\Helpers\ChatterHelper as Helper;
 use DevDojo\Chatter\Models\Models;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as Controller;
 
 class ChatterController extends Controller
 {
-    public function index($slug = '')
+    public function index(Request $request, $slug = '')
     {
         $pagination_results = config('chatter.paginate.num_of_results');
         
-        $discussions = Models::discussion()->with('user')->with('post')->with('postsCount')->with('category')
-        ->select()->addSelect(\DB::raw('(popularity * EXP( -('.config('chatter.discussions_hotness.decay_rate').') * time_to_sec(timediff(NOW(), updated_at)) / 3600 )) AS '.config('chatter.discussions_hotness.key')))
+        $discussions = Models::discussion()
+        ->with('user')->with('post')->with('postsCount')->with('category')->select()->addSelect(\DB::raw('(popularity * EXP( -('.config('chatter.discussions_hotness.decay_rate').') * time_to_sec(timediff(NOW(), updated_at)) / 3600 )) AS '.config('chatter.discussions_hotness.key')))
         ->orderBy(config('chatter.order_by.discussions.order'), config('chatter.order_by.discussions.by'));
         
         if (isset($slug)) {
@@ -26,6 +27,14 @@ class ChatterController extends Controller
             } else {
                 $current_category_id = null;
             }
+        }
+
+        if ($request->has('term') && !is_null($request->term)) {
+            $term = trim($request->term);
+            $discussions = $discussions->where('title', 'LIKE', '%' . $term . '%');
+            $discussions = $discussions->orWhereHas('post', function ($query) use ($term) {
+                $query->where('body', 'LIKE', '%' . $term . '%');
+            });
         }
         
         $discussions = $discussions->paginate($pagination_results);
