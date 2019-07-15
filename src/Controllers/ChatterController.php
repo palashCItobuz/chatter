@@ -13,7 +13,10 @@ class ChatterController extends Controller
     {
         $pagination_results = config('chatter.paginate.num_of_results');
         
-        $discussions = Models::discussion()->with('user')->with('post')->with('postsCount')->with('category')->orderBy(config('chatter.order_by.discussions.order'), config('chatter.order_by.discussions.by'));
+        $discussions = Models::discussion()->with('user')->with('post')->with('postsCount')->with('category')
+        ->select()->addSelect(\DB::raw('(popularity * EXP( -('.config('chatter.discussions_hotness.decay_rate').') * time_to_sec(timediff(NOW(), updated_at)) / 3600 )) AS '.config('chatter.discussions_hotness.key')))
+        ->orderBy(config('chatter.order_by.discussions.order'), config('chatter.order_by.discussions.by'));
+        
         if (isset($slug)) {
             $category = Models::category()->where('slug', '=', $slug)->first();
             
