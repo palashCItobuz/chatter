@@ -32,7 +32,7 @@ Route::group([
 ], function () use ($route, $middleware, $authMiddleware) {
 
     // Home view.
-    Route::get('/', [
+    Route::get('/{term?}', [
         'as'         => 'home',
         'uses'       => 'ChatterController@index',
         'middleware' => $middleware('home'),
