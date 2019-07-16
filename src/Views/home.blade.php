@@ -105,7 +105,19 @@
 					        		</div>
 
 					        		<div class="chatter_middle">
-					        			<h3 class="chatter_middle_title">{{ $discussion->title }} <div class="chatter_cat" style="background-color:{{ $discussion->category->color }}">{{ $discussion->category->name }}</div></h3>
+					        			<h3 class="chatter_middle_title">{{ $discussion->title }}
+											<div class="chatter_cat" style="background-color:{{ $discussion->category->color }}">
+												{{ $discussion->category->name }}
+											</div>
+											<span class="likes popularity ml-2">
+												<i class="fa fa-thumbs-up"></i>
+												{{ $discussion->likes->count() }}
+											</span>
+											<span class="dislikes popularity ml-2">
+												<i class="fa fa-thumbs-down"></i>
+												{{ $discussion->dislikes->count() }}
+											</span>
+										</h3>
 					        			<span class="chatter_middle_details">@lang('chatter::messages.discussion.posted_by') <span data-href="/user">{{ ucfirst($discussion->user->{Config::get('chatter.user.database_field_with_user_name')}) }}</span> {{ \Carbon\Carbon::createFromTimeStamp(strtotime($discussion->created_at))->diffForHumans() }}</span>
 					        			@if($discussion->post[0]->markdown)
 					        				<?php $discussion_body = GrahamCampbell\Markdown\Facades\Markdown::convertToHtml( $discussion->post[0]->body ); ?>

@@ -505,7 +505,7 @@
 				that.addClass('liked')
 				console.log(that, result)
 				that.find('output').text(result.data.count)
-				$('.simulacrum small').text(result.data.status).hide(20000)
+				$('.simulacrum small').text(result.data.status).hide(3000)
 			}
 		});
 		return false;
@@ -521,7 +521,7 @@
 				that.addClass('disliked')
 				console.log(that.find('output'), result.data.count)
 				that.find('output').text(result.data.count)
-				$('.simulacrum small').text(result.data.status).hide(20000)
+				$('.simulacrum small').text(result.data.status).hide(3000)
 			}
 		});
 		return false;
