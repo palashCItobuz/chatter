@@ -31,13 +31,20 @@
 				@php
 					$user = Auth::user(); 
 				@endphp
-				<span class="clearfix float-right ">
-					<span><a href="#" class="like_chat {{ isset($likedDiscussion) && $likedDiscussion->user->id === $user->id ? 'liked' : '' }}" data-discussion_id="{{ $discussion->id }}" data-user_id="{{$user->id}}">
-						<i class="fa fa-thumbs-up mr-2 upvote"></i>
-					</a>Likes: {{ $discussion->likes->count() }} </span>
-					<span><a href="#" class="unlike_chat {{ isset($dislikedDiscussion) && $dislikedDiscussion->user->id === $user->id ? 'disliked' : '' }}" data-discussion_id="{{ $discussion->id }}" data-user_id="{{$user->id}}">
-						<i class="fa fa-thumbs-down mr-2 downvote"></i>
-					</a></a>Dislikes: {{ $discussion->dislikes->count() }} </span>
+				<span class="clearfix float-right simulacrum">
+					<span id="likes">
+						<a href="#" class="like_chat {{ isset($likedDiscussion) && $likedDiscussion->user->id === $user->id ? 'liked' : '' }}" data-discussion_id="{{ $discussion->id }}" data-user_id="{{$user->id}}">
+							<i class="fa fa-thumbs-up m-1 upvote"></i>
+							<output>{{ $discussion->likes->count() }}</output>
+						</a>
+					</span>
+					<span id="dislikes">
+						<a href="#" class="unlike_chat {{ isset($dislikedDiscussion) && $dislikedDiscussion->user->id === $user->id ? 'disliked' : '' }}" data-discussion_id="{{ $discussion->id }}" data-user_id="{{$user->id}}">
+							<i class="fa fa-thumbs-down m-1 downvote"></i>
+							<output>{{ $discussion->dislikes->count() }}</output>
+						</a>
+					</span>
+					<small class="message"></small>
 				</span>
 			</span>
 		</div>
@@ -490,13 +497,15 @@
 	
 	$(document).on('click', '.like_chat', function () {
 		var that = $(this)
+		$('.simulacrum small').text('').show()
 		var discussionId = that.data('discussion_id')
 		console.log(`${config.routes[0].likeDiscussion}/${discussionId}`)
 		$.ajax({
 			url: `${config.routes[0].likeDiscussion}/${discussionId}`, success: function (result) {
 				that.addClass('liked')
 				console.log(that, result)
-				location.reload();
+				that.find('output').text(result.data.count)
+				$('.simulacrum small').text(result.data.status).hide(20000)
 			}
 		});
 		return false;
@@ -504,13 +513,15 @@
 
 	$(document).on('click', '.unlike_chat', function () {
 		var that = $(this)
+		$('.simulacrum small').text('').show()
 		var discussionId = that.data('discussion_id')
 		console.log(`${config.routes[0].disLikeDiscussion}/${discussionId}`)
 		$.ajax({
 			url: `${config.routes[0].disLikeDiscussion}/${discussionId}`, success: function (result) {
 				that.addClass('disliked')
-				console.log(that, result)
-				location.reload();
+				console.log(that.find('output'), result.data.count)
+				that.find('output').text(result.data.count)
+				$('.simulacrum small').text(result.data.status).hide(20000)
 			}
 		});
 		return false;
